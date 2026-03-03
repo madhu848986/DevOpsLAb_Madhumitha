@@ -2,19 +2,18 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: Default   # Use your self-hosted agent pool
 
 variables:
   mavenOptions: '-Xmx3072m'
-  javaVersion: '1.17'
 
 steps:
 
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '$(javaVersion)'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+- script: java -version
+  displayName: "Check Java Version"
+
+- script: mvn -version
+  displayName: "Check Maven Version"
 
 - task: Maven@3
   inputs:
@@ -23,9 +22,6 @@ steps:
     options: '-Xmx3072m'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'
-    mavenVersionOption: 'Default'
 
 - task: PublishBuildArtifacts@1
   inputs:
